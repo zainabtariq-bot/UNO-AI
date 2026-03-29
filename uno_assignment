@@ -9,7 +9,7 @@ class Card:
     def skip(self):
         return self.number == "Skip"
 
-    def __str__(self):
+    def __repr__(self):
         return f"{self.color} {self.number}"
 
     def __eq__(self, other):
