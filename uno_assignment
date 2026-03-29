@@ -180,3 +180,37 @@ def play_game():
     for i, hand in enumerate(state["hands"]):
         if len(hand) == 0:
             print(f" Player {i+1} wins!")
+def manual(state, player):
+    hand = state["hands"][player]
+    top = state["cardtop"]
+
+    valid_moves = get_valid_moves(hand, top)
+
+    print("\nYour turn (Player 3)")
+    print("Top card:", top)
+
+    print("\nYour hand:")
+    for i, card in enumerate(hand):
+        print(f"{i}: {card}")
+
+    if valid_moves:
+        print("\nValid moves:")
+        valid_indices = [i for i, c in enumerate(hand) if c in valid_moves]
+        for i in valid_indices:
+            print(f"{i}: {hand[i]}")
+
+        choice = input("Enter card index to play or 'd' to draw: ")
+
+        if choice.lower() == 'd':
+            return None
+        else:
+            choice = int(choice)
+            if choice in valid_indices:
+                return hand[choice]
+            else:
+                print("Invalid choice, drawing card.")
+                return None
+    else:
+        print("No valid moves. Drawing card.")
+        return None
+play_game()
