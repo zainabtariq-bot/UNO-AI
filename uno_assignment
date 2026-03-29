@@ -130,3 +130,53 @@ def expectimax(state, depth, player, ai_player):
         move = random.choice(valid_moves)
         new_state, next_player = domove(state, player, move)
         return expectimax(new_state, depth-1, next_player, ai_player)
+def init_game():
+    deck = generate_deck()
+
+    hands = [[], [], []]
+    for j in range(5):
+        for i in range(3):
+            hands[i].append(deck.pop())
+
+    cardtop = deck.pop()
+
+    return {
+        "hands": hands,
+        "deck": deck,
+        "cardtop": cardtop
+    }
+
+
+def play_game():
+    mode = input("Select Player 3 mode: (1) Manual (2) AI Simulation: ")
+    state = init_game()
+    
+    player = 0
+
+    while not is_terminal(state):
+        print("\nTop card:", state["cardtop"])
+        print("Player 1:", state["hands"][0])
+        print("Player 2:", state["hands"][1])
+        print("Player 3:", state["hands"][2])
+
+        if player == 0:
+            score, move = minimax(state, 3, player, 0)
+            print("P1 plays:", move, " Score:", score)
+
+        elif player == 1:
+            score, move = expectimax(state, 3, player, 1)
+            print("P2  plays:", move, " Score:", score)
+
+        else:
+            if mode == "1":
+                move = manual(state, player)
+                print("P3  plays:", move)
+            else:
+                score, move = minimax(state, 3, player, 2)
+                print("P3  plays:", move, " Score:", score)
+
+        state, player = domove(state, player, move)
+
+    for i, hand in enumerate(state["hands"]):
+        if len(hand) == 0:
+            print(f" Player {i+1} wins!")
