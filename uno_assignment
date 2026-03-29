@@ -91,3 +91,42 @@ def minimax(state, depth, player, maxplayer):
             min_eval = min(min_eval, score)
 
         return min_eval, None
+def expectimax(state, depth, player, ai_player):
+
+    if depth == 0 or is_terminal(state):
+        return evaluate(state, ai_player, "offensive"), None
+
+    valid_moves = get_valid_moves(state["hands"][player], state["cardtop"])
+    if not valid_moves:
+        if not state["deck"]:
+            return evaluate(state, ai_player, "offensive"), None
+        total = 0
+        prob = 1 / len(state["deck"])
+        for card in state["deck"]:
+            new_state = copy.deepcopy(state)
+            new_state["hands"][player].append(card)
+            next_state, next_player = domove(new_state, player, None)
+
+            value, i = expectimax(next_state, depth-1, next_player, ai_player)
+            total += prob * value
+
+        return total, None
+
+    if player == ai_player:
+        max_eval = float('-inf')
+        best_move = None
+
+        for move in valid_moves:
+            new_state, next_player = domove(state, player, move)
+            value, u = expectimax(new_state, depth-1, next_player, ai_player)
+
+            if value > max_eval:
+                max_eval = value
+                best_move = move
+
+        return max_eval, best_move
+
+    else:
+        move = random.choice(valid_moves)
+        new_state, next_player = domove(state, player, move)
+        return expectimax(new_state, depth-1, next_player, ai_player)
