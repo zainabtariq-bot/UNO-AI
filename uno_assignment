@@ -12,6 +12,14 @@ class Card:
     def __str__(self):
         return f"{self.color} {self.number}"
 
+    def __eq__(self, other):
+        return isinstance(other, Card) and \
+               self.color == other.color and \
+               self.number == other.number
+
+    def __hash__(self):
+        return hash((self.color, self.number))
+
 
 def generate_deck():
     colors = ["Red", "Blue", "Green", "Yellow"]
