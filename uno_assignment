@@ -82,3 +82,12 @@ def minimax(state, depth, player, maxplayer):
                 best_move = move
 
         return max_eval, best_move
+ else:
+        min_eval = float('inf')
+        for move in valid_moves:
+            new_state, next_player = domove(state, player, move)
+            score, i = minimax(new_state, depth-1, next_player, maxplayer)
+
+            min_eval = min(min_eval, score)
+
+        return min_eval, None
